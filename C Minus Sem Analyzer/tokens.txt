@@ -15,6 +15,9 @@ ID: y
 ]
 )
 {
+K: int
+ID: p
+;
 ID: b
 [
 INT: 1
@@ -30,19 +33,31 @@ INT: 1
 INT: 1
 ;
 K: return
-INT: 1
+ID: p
 ;
 }
-K: void
+K: int
 ID: foo
 (
 K: int
-ID: test
+ID: a
 )
 {
-ID: test
+{
+K: int
+ID: a
+;
+ID: a
 =
-INT: 3
+INT: 6
+;
+}
+ID: a
+=
+INT: 5
+;
+K: return
+INT: 1
 ;
 }
 K: void
@@ -67,11 +82,30 @@ INT: 1
 =
 ID: z
 ;
+ID: y
+[
+INT: 2
+]
+=
+ID: x
+*
 ID: foo
 (
 ID: z
 )
-;
+/
+ID: foo
+(
+ID: z
+)
++
+ID: maina
+(
+ID: y
+,
+ID: y
+)
+-
 ID: maina
 (
 ID: y

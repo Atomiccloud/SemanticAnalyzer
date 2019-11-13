@@ -4,9 +4,11 @@ import java.util.*;
 
 public class Semantic {
 	//Global Variables
+	static boolean enteredReturn = false;
 	static boolean mainVoid2 = false;
 	static boolean mainVoid = false;
 	static boolean foundInParams = false;
+	static boolean returnInt = false;
 	static Scanner sc = null;
 	static String currToken;
 	static String funString; 
@@ -15,8 +17,9 @@ public class Semantic {
 	static int currScope = 0;
 	static ArrayList<String> params;
 	static List<String> funArray = new ArrayList<String>(); 
-	static Map<String, ArrayList<String>> paramMap = new HashMap<String, ArrayList<String>>();
 	static Map<String, String[]> varMap = new HashMap<String, String[]>();
+	static Map<String, String> returnCheck = new HashMap<String, String>();
+	static Map<String, ArrayList<String>> paramMap = new HashMap<String, ArrayList<String>>();
 	static List<Map<String, String[]>> ScopeArray = new ArrayList<Map<String, String[]>>(); 
 
 	public static void main(String[] args) {
@@ -102,6 +105,7 @@ public class Semantic {
 				}
 			}
 			funArray.add(funString);
+			returnCheck.put(funString, voidCheck);
 			funDecP();
 		} else {
 			rej();
@@ -128,6 +132,12 @@ public class Semantic {
 	private static void compoundStmt() {
 		if(currToken.equals("{")) {
 			currScope++;
+			if(currScope == 1) {
+				if(returnCheck.get(funString).equals("K: int")) {
+					returnInt = true;
+					enteredReturn = false;
+				}
+			}
 			if(ScopeArray.size() != currScope) {
 				ScopeArray.add(null);
 			}
@@ -140,6 +150,15 @@ public class Semantic {
 					ScopeArray.remove(currScope);					
 				}
 				currScope--;
+				if(currScope == 0) {
+					if(returnInt) {
+						if(!enteredReturn) {
+							System.out.println("Rejected in cmpdstmt");
+							rej();
+						}
+					}
+					returnInt = false;
+				}
 				varMap = ScopeArray.get(currScope);
 				currToken = sc.nextLine();
 				if((funArray.get(funArray.size()-1).equals("ID: main")) && currScope == 0) {
@@ -171,6 +190,7 @@ public class Semantic {
 		} else if (currToken.equals("K: while")) {
 			iterationStmt();
 		} else if (currToken.equals("K: return")) {
+			enteredReturn = true;
 			returnStmt();
 		} else {
 			expressionStmt();
@@ -237,6 +257,10 @@ public class Semantic {
 
 	private static void addop() {
 		currToken = sc.nextLine();
+		if(returnCheck.containsKey(currToken) && !returnCheck.get(currToken).equals("K: int")) {
+			System.out.println("Rejected in addopP");
+			rej();
+		}
 		return;
 	}
 
@@ -250,6 +274,18 @@ public class Semantic {
 		} else if (currToken.contains("ID: ")) {
 			String func = currToken;
 			checkID();
+			if(enteredReturn && returnCheck.get(funString).equals("K: int")) {
+				if(params.size()>1) {
+					for(int i=1;i<params.size();i=i+2) {
+						if(params.get(i).equals(func)) {
+							if(params.get(i-1).equals("array")) {
+								System.out.println("Rej in factor");
+								rej();
+							}
+						}
+					}
+				}
+			}
 			factorP(func);
 		} else if (currToken.contains("INT: ") ) {
 			checkNUM();
@@ -264,7 +300,6 @@ public class Semantic {
 			callP(func);
 		} else {
 			varP(func);
-			
 		}
 		return;
 	}
@@ -305,7 +340,7 @@ public class Semantic {
 			arrayCheck(found,func);
 			currToken = sc.nextLine();
 			expression();
-		}
+		} 
 		return;
 	}
 
@@ -317,11 +352,23 @@ public class Semantic {
 		} else {
 			rej();
 		}
+		if(currToken.equals("+")) {
+			if(!returnCheck.get(func).equals("K: int")) {
+				System.out.println("Rejected in callP");
+				rej();
+			}
+		}
 		return;
 	}
 
 	private static void args(String func) {
-		if (currToken.equals("(") || currToken.contains("ID: ") || currToken.contains("INT: ") ) {
+		if(currToken.equals(")")) {
+			if(!paramMap.get(func).get(0).equals("void")) {
+				System.out.println("Rejected in args");
+				rej();
+			}
+		}
+		if (currToken.contains("ID: ") || currToken.contains("INT: ") ) {
 			argList(func);
 		}
 		return;
@@ -330,9 +377,12 @@ public class Semantic {
 	private static void argList(String func) {
 		int counter = 2;
 		if(!varMap.containsKey(currToken)) {
-			//check prev scope for globals?
 			rej();
 		} else {
+			if(paramMap.get(func) == null) {
+				System.out.println("rejected in arglist");
+				rej();
+			}
 			if(!(varMap.get(currToken)[1].equals(paramMap.get(func).get(0)))){
 				rej();
 			}
@@ -478,7 +528,6 @@ public class Semantic {
 		}
 		
 		if(ScopeArray.size() == 0) {
-			//loop here to add until currscope equals size?
 			ScopeArray.add(0,null);
 			ScopeArray.add(currScope,varMap);					
 		} else if(ScopeArray.size() == currScope){
@@ -657,7 +706,7 @@ public class Semantic {
 					rej();
 				}
 			}
-		}
+		} 
 	}
 
 	private static void rej() {

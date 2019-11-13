@@ -1,14 +1,21 @@
 int x;
 
 int maina(int b[], int y[]){
+	int p;
 	b[1] = 5;
 	y[1] = 1;
 	
-	return 1;
+	return p;
 }
 
-void foo(int test){
-	test = 3;
+int foo(int a){
+	{
+	 int a;
+	 a = 6;
+	}
+	a = 5;
+	
+	return 1;
 }
 
 void main(void){
@@ -16,12 +23,7 @@ void main(void){
 	int z;
 	y[1] = z;
 	
-	foo(z);
-	maina(y, y);
+	y[2] = x * foo(z) / foo(z) + maina(y,y) - maina(y,y);
 	
 	return;
 }
-
-
-
-//Fix returning arrays (should reject)
