@@ -1,0 +1,52 @@
+K: int
+ID: x
+;
+K: void
+ID: maina
+(
+K: int
+ID: b
+,
+K: int
+ID: y
+[
+]
+)
+{
+ID: b
+=
+INT: 5
+;
+}
+K: void
+ID: foo
+(
+K: int
+ID: test
+)
+{
+}
+K: void
+ID: main
+(
+K: void
+)
+{
+K: int
+ID: y
+[
+INT: 90
+]
+;
+K: int
+ID: z
+;
+ID: y
+[
+INT: 1
+]
+=
+ID: z
+;
+}
+$

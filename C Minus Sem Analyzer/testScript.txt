@@ -1,0 +1,14 @@
+int x;
+
+void maina(int b, int y[]){
+	b = 5;
+}
+
+void foo(int test){
+}
+
+void main(void){
+	int y[90];
+	int z;
+	y[1] = z;
+}
