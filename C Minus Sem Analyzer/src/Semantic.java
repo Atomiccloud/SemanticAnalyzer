@@ -5,10 +5,12 @@ import java.util.*;
 public class Semantic {
 	//Global Variables
 	static boolean enteredReturn = false;
+	static boolean checkArrayInt = false;
 	static boolean mainVoid2 = false;
 	static boolean mainVoid = false;
 	static boolean foundInParams = false;
 	static boolean returnInt = false;
+	static boolean afterEquals = false;
 	static Scanner sc = null;
 	static String currToken;
 	static String funString; 
@@ -153,7 +155,7 @@ public class Semantic {
 				if(currScope == 0) {
 					if(returnInt) {
 						if(!enteredReturn) {
-							System.out.println("Rejected in cmpdstmt");
+//							System.out.println("Rejected in cmpdstmt");
 							rej();
 						}
 					}
@@ -258,7 +260,7 @@ public class Semantic {
 	private static void addop() {
 		currToken = sc.nextLine();
 		if(returnCheck.containsKey(currToken) && !returnCheck.get(currToken).equals("K: int")) {
-			System.out.println("Rejected in addopP");
+//			System.out.println("Rejected in addopP");
 			rej();
 		}
 		return;
@@ -274,17 +276,35 @@ public class Semantic {
 		} else if (currToken.contains("ID: ")) {
 			String func = currToken;
 			checkID();
+			//this checks to make sure return type of delcared functions are ints and not arrays
 			if(enteredReturn && returnCheck.get(funString).equals("K: int")) {
 				if(params.size()>1) {
 					for(int i=1;i<params.size();i=i+2) {
 						if(params.get(i).equals(func)) {
 							if(params.get(i-1).equals("array")) {
-								System.out.println("Rej in factor");
-								rej();
+								if(!currToken.equals("[")) {
+//									System.out.println("Rej in factor");
+									rej();									
+								}
 							}
 						}
 					}
 				}
+			}
+			
+			if(varMap != null) {
+				if(varMap.get(func) != null) {
+					if(!currToken.equals("==") && varMap.get(func)[1].equals("array") && !currToken.equals("[")){
+//						System.out.println("Rejected in factor2");
+						rej();
+					}				
+				}				
+			}
+			if(afterEquals) {
+				if(funArray.contains(func) && returnCheck.get(func).equals("K: void")) {
+//					System.out.println("Reject in factor3");
+					rej();
+				}				
 			}
 			factorP(func);
 		} else if (currToken.contains("INT: ") ) {
@@ -339,8 +359,10 @@ public class Semantic {
 		} else if (currToken.equals("=")) {
 			arrayCheck(found,func);
 			currToken = sc.nextLine();
+			afterEquals = true;
 			expression();
 		} 
+		afterEquals = false;
 		return;
 	}
 
@@ -354,7 +376,7 @@ public class Semantic {
 		}
 		if(currToken.equals("+")) {
 			if(!returnCheck.get(func).equals("K: int")) {
-				System.out.println("Rejected in callP");
+//				System.out.println("Rejected in callP");
 				rej();
 			}
 		}
@@ -363,8 +385,12 @@ public class Semantic {
 
 	private static void args(String func) {
 		if(currToken.equals(")")) {
-			if(!paramMap.get(func).get(0).equals("void")) {
-				System.out.println("Rejected in args");
+			if(paramMap.containsKey(func)) {
+				if(!paramMap.get(func).get(0).equals("void")) {
+//				System.out.println("Rejected in args");
+					rej();
+				}				
+			} else {
 				rej();
 			}
 		}
@@ -376,14 +402,18 @@ public class Semantic {
 
 	private static void argList(String func) {
 		int counter = 2;
-		if(!varMap.containsKey(currToken)) {
-			rej();
+		if(currToken.contains("INT: ") || !varMap.containsKey(currToken)) {
+			if(!currToken.contains("INT: ")) {
+//				System.out.println("Rej in argList1");
+				rej();			
+			}
 		} else {
 			if(paramMap.get(func) == null) {
-				System.out.println("rejected in arglist");
+//				System.out.println("rejected in arglist2");
 				rej();
 			}
 			if(!(varMap.get(currToken)[1].equals(paramMap.get(func).get(0)))){
+//				System.out.println("rejected in arglist3");
 				rej();
 			}
 		}
@@ -395,11 +425,14 @@ public class Semantic {
 	private static void argListP(String func, int counter) {
 		if(currToken.equals(",")) {	
 			currToken = sc.nextLine();
-			if(!varMap.containsKey(currToken)) {
-				//check prev scope for globals?
-				rej();
+			if(currToken.contains("INT: ") || !varMap.containsKey(currToken)) {
+				if(!currToken.contains("INT: ")) {
+//					System.out.println("Rej in argListP1");
+					rej();			
+				}
 			} else {
 				if(!(varMap.get(currToken)[1].equals(paramMap.get(func).get(counter)))) {
+//					System.out.println("Rej in argListP2");
 					rej();
 				}
 			}
@@ -419,14 +452,14 @@ public class Semantic {
 		currToken = sc.nextLine();
 		if (currToken.equals(";")) {
 			if(!voidCheck.equals("K: void")) {
-				System.out.println("Reject in returnStmt1");
+//				System.out.println("Reject in returnStmt1");
 				rej();
 			}
 			currToken = sc.nextLine();
 		} else {
 			expression();
 			if(!voidCheck.equals("K: int")) {
-				System.out.println("Reject in returnStmt2");
+//				System.out.println("Reject in returnStmt2");
 				rej();
 			}
 			if (currToken.equals(";")) {
@@ -595,7 +628,8 @@ public class Semantic {
 	private static void varDecP() {
 		String[] varArray = new String[4];
 		if(currToken.equals(";")) {
-			if(!varMap.containsKey(funString)){
+			
+			if(!(varMap == null) && !varMap.containsKey(funString)){
 				varArray[1] = "K: int";
 				varArray[3] = String.valueOf(currScope);
 				varMap.put(funString, varArray);
@@ -630,7 +664,7 @@ public class Semantic {
 		} else {
 			ScopeArray.set(currScope, varMap);
 		}
-		//System.out.println(ScopeArray);
+//		System.out.println(ScopeArray);
 		return;
 	}
 
@@ -675,34 +709,50 @@ public class Semantic {
 			}
 		}
 		if(!found) {
-			System.out.println("Reject in scope check");
+//			System.out.println("Reject in scope check");
 			rej();
 		}
 		return i;
 	}
 	
 	private static void arrayCheck(int i, String id) {
-		if(foundInParams) {
+		if(varMap != null && varMap.containsKey(id)) {
+			if(varMap.get(id)[1].equals("array")) {
+				if(!currToken.equals("[")) {
+					rej();
+				}
+			} else {
+				if(varMap.get(id)[1].equals("K: int")) {
+					if(!currToken.equals("=")) {
+//						System.out.println("Rej in arrCheck5");
+						rej();						
+					}
+				}
+			}
+		} else if(foundInParams) {
+//			System.out.println(currScope);
 			if(currToken.equals("=")) {
 				if(!params.get(i-1).equals("K: int")) {
-					System.out.println("Reject in arraycheck");
+//					System.out.println("Reject in arraycheck1");
 					rej();
 				}	
 			} else if(currToken.equals("[")) {
 				if(!params.get(i-1).equals("array")) {
-					System.out.println("Reject in arraycheck");
+
+//					System.out.println("Reject in arraycheck2");
 					rej();
 				}	
 			}
 		} else {
 			if(currToken.equals("=")) {
 				if(!ScopeArray.get(i-1).get(id)[1].equals("K: int")) {
-					System.out.println("Rejected in arraycheck");
+//					System.out.println("Rejected in arraycheck3");
 					rej();
 				}
 			} else if(currToken.equals("[")) {
+//				System.out.println(currScope);
 				if(!ScopeArray.get(i-1).get(id)[1].equals("array")) {
-					System.out.println("Rejected in arraycheck");
+//					System.out.println("Rejected in arraycheck4");
 					rej();
 				}
 			}

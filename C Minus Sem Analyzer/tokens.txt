@@ -1,64 +1,16 @@
-K: int
-ID: x
-;
-K: int
-ID: maina
-(
-K: int
-ID: b
-[
-]
-,
-K: int
-ID: y
-[
-]
-)
-{
-K: int
-ID: p
-;
-ID: b
-[
-INT: 1
-]
-=
-INT: 5
-;
-ID: y
-[
-INT: 1
-]
-=
-INT: 1
-;
-K: return
-ID: p
-;
-}
-K: int
+K: void
 ID: foo
 (
-K: int
-ID: a
+K: void
 )
 {
-{
-K: int
-ID: a
-;
-ID: a
-=
-INT: 6
-;
 }
-ID: a
-=
-INT: 5
-;
-K: return
-INT: 1
-;
+K: void
+ID: bar
+(
+K: void
+)
+{
 }
 K: void
 ID: main
@@ -66,54 +18,5 @@ ID: main
 K: void
 )
 {
-K: int
-ID: y
-[
-INT: 1
-]
-;
-K: int
-ID: z
-;
-ID: y
-[
-INT: 1
-]
-=
-ID: z
-;
-ID: y
-[
-INT: 2
-]
-=
-ID: x
-*
-ID: foo
-(
-ID: z
-)
-/
-ID: foo
-(
-ID: z
-)
-+
-ID: maina
-(
-ID: y
-,
-ID: y
-)
--
-ID: maina
-(
-ID: y
-,
-ID: y
-)
-;
-K: return
-;
 }
 $

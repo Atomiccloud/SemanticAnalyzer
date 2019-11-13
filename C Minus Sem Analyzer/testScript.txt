@@ -1,29 +1,14 @@
-int x;
-
-int maina(int b[], int y[]){
-	int p;
-	b[1] = 5;
-	y[1] = 1;
+void foo(void) {
 	
-	return p;
 }
 
-int foo(int a){
-	{
-	 int a;
-	 a = 6;
-	}
-	a = 5;
-	
-	return 1;
+void bar(void) {
+
 }
 
-void main(void){
-	int y[1];
-	int z;
-	y[1] = z;
-	
-	y[2] = x * foo(z) / foo(z) + maina(y,y) - maina(y,y);
-	
-	return;
+void main(void) {
+
 }
+
+//check function calls in if statements
+//check if same variable declared in params as a new scope in function, needs to look in scopearray first
