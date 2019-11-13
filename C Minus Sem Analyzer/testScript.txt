@@ -1,14 +1,19 @@
 int x;
 
-void maina(int b, int y[]){
-	b = 5;
+void maina(int b[], int y[]){
+	b[1] = 5;
+	y[1] = 1;
 }
 
 void foo(int test){
+	test = 3;
 }
 
 void main(void){
-	int y[90];
+	int y[1];
 	int z;
 	y[1] = z;
+	
+	foo(z);
+	maina(y, y);
 }

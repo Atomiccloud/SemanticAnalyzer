@@ -6,6 +6,8 @@ ID: maina
 (
 K: int
 ID: b
+[
+]
 ,
 K: int
 ID: y
@@ -14,8 +16,18 @@ ID: y
 )
 {
 ID: b
+[
+INT: 1
+]
 =
 INT: 5
+;
+ID: y
+[
+INT: 1
+]
+=
+INT: 1
 ;
 }
 K: void
@@ -25,6 +37,10 @@ K: int
 ID: test
 )
 {
+ID: test
+=
+INT: 3
+;
 }
 K: void
 ID: main
@@ -35,7 +51,7 @@ K: void
 K: int
 ID: y
 [
-INT: 90
+INT: 1
 ]
 ;
 K: int
@@ -47,6 +63,18 @@ INT: 1
 ]
 =
 ID: z
+;
+ID: foo
+(
+ID: z
+)
+;
+ID: maina
+(
+ID: y
+,
+ID: y
+)
 ;
 }
 $

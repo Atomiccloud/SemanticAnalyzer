@@ -2,10 +2,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-public class Parser {
+public class Semantic {
 	//Global Variables
 	static boolean mainVoid2 = false;
 	static boolean mainVoid = false;
+	static boolean foundInParams = false;
 	static Scanner sc = null;
 	static String currToken;
 	static String funString; 
@@ -591,6 +592,7 @@ public class Parser {
 	}	
 	
 	private static int scopeCheck(String func) {
+		foundInParams = false;
 		boolean found = false;
 		int i=0;
 		if(!(ScopeArray.size() == currScope)) {
@@ -612,6 +614,9 @@ public class Parser {
 		for(int j = 1; j<params.size();j=j+2) {
 			if(params.get(j).equals(func)) {
 				found = true;
+				i = j;
+				foundInParams = true;
+				break;
 			}
 		}
 		if(!found) {
@@ -622,31 +627,30 @@ public class Parser {
 	}
 	
 	private static void arrayCheck(int i, String id) {
-		System.out.println(id);
-		if(ScopeArray.size() == currScope) {
-			if(currToken.equals("[")) {
-				if(ScopeArray.get(i) != null && !(ScopeArray.get(i).get(id)[1].equals("array"))) {
-					rej();
-				}			
-			} else {
-				//x = null
-				if(ScopeArray.get(i) != null && !(ScopeArray.get(i).get(id)[1].equals("K: int"))) {
+		if(foundInParams) {
+			if(currToken.equals("=")) {
+				if(!params.get(i-1).equals("K: int")) {
+					System.out.println("Reject in arraycheck");
 					rej();
 				}	
-			}			
-		}
-		if(ScopeArray.size() != currScope) {
-			System.out.println(ScopeArray.size());
-			System.out.println(currScope);
-			if(currToken.equals("[")) {
-				if(!(ScopeArray.get(i-1).get(id)[1].equals("array"))) {
-					rej();
-				}			
-			} else {
-				if(!(ScopeArray.get(i-1).get(id)[1].equals("K: int"))) {
+			} else if(currToken.equals("[")) {
+				if(!params.get(i-1).equals("array")) {
+					System.out.println("Reject in arraycheck");
 					rej();
 				}	
-			}			
+			}
+		} else {
+			if(currToken.equals("=")) {
+				if(!ScopeArray.get(i-1).get(id)[1].equals("K: int")) {
+					System.out.println("Rejected in arraycheck");
+					rej();
+				}
+			} else if(currToken.equals("[")) {
+				if(!ScopeArray.get(i-1).get(id)[1].equals("array")) {
+					System.out.println("Rejected in arraycheck");
+					rej();
+				}
+			}
 		}
 	}
 
