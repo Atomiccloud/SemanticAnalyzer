@@ -1,8 +1,10 @@
 int x;
 
-void maina(int b[], int y[]){
+int maina(int b[], int y[]){
 	b[1] = 5;
 	y[1] = 1;
+	
+	return 1;
 }
 
 void foo(int test){
@@ -16,4 +18,10 @@ void main(void){
 	
 	foo(z);
 	maina(y, y);
+	
+	return;
 }
+
+
+
+//Fix returning arrays (should reject)

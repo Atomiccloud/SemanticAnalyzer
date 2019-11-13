@@ -1,7 +1,7 @@
 K: int
 ID: x
 ;
-K: void
+K: int
 ID: maina
 (
 K: int
@@ -27,6 +27,9 @@ ID: y
 INT: 1
 ]
 =
+INT: 1
+;
+K: return
 INT: 1
 ;
 }
@@ -75,6 +78,8 @@ ID: y
 ,
 ID: y
 )
+;
+K: return
 ;
 }
 $

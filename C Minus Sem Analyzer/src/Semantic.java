@@ -183,8 +183,7 @@ public class Semantic {
 			currToken = sc.nextLine();			
 		} else {
 			expression();
-			if(currToken.equals(";")) {
-				
+			if(currToken.equals(";")) {	
 				currToken = sc.nextLine();				
 			} else {
 				rej();
@@ -369,10 +368,17 @@ public class Semantic {
 	private static void returnStmt() {
 		currToken = sc.nextLine();
 		if (currToken.equals(";")) {
-			
+			if(!voidCheck.equals("K: void")) {
+				System.out.println("Reject in returnStmt1");
+				rej();
+			}
 			currToken = sc.nextLine();
 		} else {
 			expression();
+			if(!voidCheck.equals("K: int")) {
+				System.out.println("Reject in returnStmt2");
+				rej();
+			}
 			if (currToken.equals(";")) {
 				
 				currToken = sc.nextLine();
