@@ -1,22 +1,21 @@
 K: void
-ID: foo
-(
-K: void
-)
-{
-}
-K: void
-ID: bar
-(
-K: void
-)
-{
-}
-K: void
 ID: main
 (
 K: void
 )
 {
+K: int
+ID: a
+[
+INT: 0
+]
+;
+K: int
+ID: b
+;
+ID: b
+=
+ID: a
+;
 }
 $

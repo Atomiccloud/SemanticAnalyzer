@@ -1,14 +1,9 @@
-void foo(void) {
-	
-}
-
-void bar(void) {
-
-}
-
 void main(void) {
-
+        int a[0];
+        int b;
+        b = a;
 }
+
 
 //check function calls in if statements
 //check if same variable declared in params as a new scope in function, needs to look in scopearray first
